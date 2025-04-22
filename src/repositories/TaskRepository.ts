@@ -1,20 +1,25 @@
 import prisma from '../config/database';
 import { Task } from '../models/Task';
-import { TaskCreateDto, TaskUpdateDto, TaskStatusType } from '../dtos/TaskDto';
+import { TaskCreateDto, TaskUpdateDto } from '../dtos/TaskDto';
+import { TaskStatus } from '../enums/TaskStatus';
 import AppError from '../errors/AppError';
 import { ErrorCode } from '../errors/ErrorCodes';
 import { Prisma } from '@prisma/client';
 
+const toTask = (prismaTask: any): Task => ({
+    ...prismaTask,
+    status: prismaTask.status as TaskStatus
+});
+
 export default class TaskRepository {
     async create(data: TaskCreateDto): Promise<Task> {
         try {
-            return await prisma.task.create({
-                data,
-            });
+            const task = await prisma.task.create({ data });
+            return toTask(task);
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new AppError(
-                    'Erro ao criar tarefa no banco de dados',
+                    'Error creating task in database',
                     400,
                     ErrorCode.DATABASE_ERROR
                 );
@@ -65,14 +70,14 @@ export default class TaskRepository {
             const pages = Math.ceil(total / limit);
 
             return {
-                tasks,
+                tasks: tasks.map(toTask),
                 total,
                 page,
                 pages,
             };
         } catch (error) {
             throw new AppError(
-                'Erro ao buscar tarefas',
+                'Error fetching tasks',
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -81,12 +86,13 @@ export default class TaskRepository {
 
     async findById(id: string): Promise<Task | null> {
         try {
-            return await prisma.task.findUnique({
+            const task = await prisma.task.findUnique({
                 where: { id },
             });
+            return task ? toTask(task) : null;
         } catch (error) {
             throw new AppError(
-                'Erro ao buscar tarefa',
+                'Error fetching task',
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -94,7 +100,7 @@ export default class TaskRepository {
     }
 
     async findByStatus(
-        status: TaskStatusType,
+        status: TaskStatus,
         page: number = 1,
         limit: number = 10,
     ): Promise<{ tasks: Task[]; total: number; page: number; pages: number }> {
@@ -116,14 +122,14 @@ export default class TaskRepository {
             const pages = Math.ceil(total / limit);
 
             return {
-                tasks,
+                tasks: tasks.map(toTask),
                 total,
                 page,
                 pages,
             };
         } catch (error) {
             throw new AppError(
-                `Erro ao buscar tarefas com status ${status}`,
+                `Error fetching tasks with status ${status}`,
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -132,22 +138,23 @@ export default class TaskRepository {
 
     async update(id: string, data: TaskUpdateDto): Promise<Task> {
         try {
-            return await prisma.task.update({
+            const task = await prisma.task.update({
                 where: { id },
                 data,
             });
+            return toTask(task);
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2025') {
                     throw new AppError(
-                        'Tarefa não encontrada',
+                        'Task not found',
                         404,
                         ErrorCode.TASK_NOT_FOUND
                     );
                 }
             }
             throw new AppError(
-                'Erro ao atualizar tarefa',
+                'Error updating task',
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -163,14 +170,14 @@ export default class TaskRepository {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2025') {
                     throw new AppError(
-                        'Tarefa não encontrada',
+                        'Task not found',
                         404,
                         ErrorCode.TASK_NOT_FOUND
                     );
                 }
             }
             throw new AppError(
-                'Erro ao deletar tarefa',
+                'Error deleting task',
                 500,
                 ErrorCode.DATABASE_ERROR
             );

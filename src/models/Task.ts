@@ -1,8 +1,10 @@
+import { TaskStatus } from '../enums/TaskStatus';
+
 export interface Task {
     id: string;
     title: string;
     description: string;
-    status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+    status: TaskStatus;
     priority: number;
     category: string;
     created_at: Date;

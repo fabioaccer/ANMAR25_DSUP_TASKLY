@@ -1,34 +1,35 @@
-import { Note } from '../models/Note';
+import { injectable, inject } from 'tsyringe';
+import { PrismaClient } from '@prisma/client';
 import { NoteCreateDto, NoteUpdateDto } from '../dtos/NoteDto';
-import NoteRepository from '../repositories/NoteRepository';
 import AppError from '../errors/AppError';
 
-export default class NoteService {
-    private noteRepository: NoteRepository;
+@injectable()
+export class NoteService {
+    constructor(
+        @inject('PrismaClient')
+        private prisma: PrismaClient
+    ) {}
 
-    constructor() {
-        this.noteRepository = new NoteRepository();
+    async create(data: NoteCreateDto) {
+        return this.prisma.note.create({
+            data: {
+                content: data.content,
+                task_id: data.task_id
+            }
+        });
     }
 
-    async create(taskId: string, data: { content: string }): Promise<Note> {
-        const noteData: NoteCreateDto = {
-            content: data.content,
-            task_id: taskId,
-        };
-
-        return this.noteRepository.create(noteData);
+    async findAll(task_id?: string) {
+        return this.prisma.note.findMany({
+            where: task_id ? { task_id } : undefined,
+            orderBy: { created_at: 'desc' }
+        });
     }
 
-    async findByTaskId(
-        taskId: string,
-        page: number = 1,
-        limit: number = 10,
-    ): Promise<{ notes: Note[]; total: number; page: number; pages: number }> {
-        return this.noteRepository.findByTaskId(taskId, page, limit);
-    }
-
-    async findById(id: string): Promise<Note> {
-        const note = await this.noteRepository.findById(id);
+    async findById(id: string) {
+        const note = await this.prisma.note.findUnique({
+            where: { id }
+        });
 
         if (!note) {
             throw new AppError('Note not found', 404);
@@ -37,11 +38,18 @@ export default class NoteService {
         return note;
     }
 
-    async update(id: string, data: NoteUpdateDto): Promise<Note> {
-        return this.noteRepository.update(id, data);
+    async update(id: string, data: NoteUpdateDto) {
+        return this.prisma.note.update({
+            where: { id },
+            data: {
+                content: data.content
+            }
+        });
     }
 
-    async delete(id: string): Promise<void> {
-        await this.noteRepository.delete(id);
+    async delete(id: string) {
+        await this.prisma.note.delete({
+            where: { id }
+        });
     }
 }

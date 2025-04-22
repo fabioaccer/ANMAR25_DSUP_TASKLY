@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { IsString, IsUUID, Length } from 'class-validator';
 
 export const NoteCreateSchema = z.object({
   params: z.object({
@@ -48,11 +49,17 @@ export const TaskNotesParamSchema = z.object({
   }),
 });
 
-export interface NoteCreateDto {
-  content: string;
-  task_id: string;
+export class NoteCreateDto {
+    @IsString()
+    @Length(1, 1000, { message: 'Note content must be between 1 and 1000 characters' })
+    content: string;
+
+    @IsUUID()
+    task_id: string;
 }
 
-export interface NoteUpdateDto {
-  content: string;
+export class NoteUpdateDto {
+    @IsString()
+    @Length(1, 1000, { message: 'Note content must be between 1 and 1000 characters' })
+    content: string;
 }

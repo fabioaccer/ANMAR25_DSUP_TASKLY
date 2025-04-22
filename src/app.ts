@@ -1,30 +1,23 @@
-import express, { Express } from 'express';
+import express from 'express';
+import 'reflect-metadata';
 import cors from 'cors';
-import routes from './routes';
+import { container } from 'tsyringe';
+import taskRoutes from './routes/task.routes';
+import noteRoutes from './routes/note.routes';
 import errorMiddleware from './middlewares/ErrorMiddleware';
 
-class App {
-    public server: Express;
+const app = express();
 
-    constructor() {
-        this.server = express();
-        this.middlewares();
-        this.routes();
-        this.errorHandling();
-    }
+app.use(cors());
+app.use(express.json());
 
-    private middlewares(): void {
-        this.server.use(express.json());
-        this.server.use(cors());
-    }
+// Importando o container de injeção de dependência
+import './config/container';
 
-    private routes(): void {
-        this.server.use(routes);
-    }
+// Rotas
+app.use('/tasks', taskRoutes);
+app.use('/notes', noteRoutes);
 
-    private errorHandling(): void {
-        this.server.use(errorMiddleware);
-    }
-}
+app.use(errorMiddleware);
 
-export default new App().server;
+export default app;

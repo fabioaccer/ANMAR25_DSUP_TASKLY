@@ -6,9 +6,9 @@ import { ZodError } from 'zod';
 
 export default function errorMiddleware(
     err: Error,
-    request: Request,
+    _: Request,
     response: Response,
-    _: NextFunction,
+    __: NextFunction,
 ): Response {
     if (err instanceof AppError) {
         return response.status(err.statusCode).json({

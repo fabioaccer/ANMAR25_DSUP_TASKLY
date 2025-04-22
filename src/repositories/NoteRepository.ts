@@ -8,14 +8,13 @@ import { Prisma } from '@prisma/client';
 export default class NoteRepository {
     async create(data: NoteCreateDto): Promise<Note> {
         try {
-            // Check if task exists
             const task = await prisma.task.findUnique({
                 where: { id: data.task_id },
             });
 
             if (!task) {
                 throw new AppError(
-                    'Tarefa não encontrada',
+                    'Task not found',
                     404,
                     ErrorCode.TASK_NOT_FOUND
                 );
@@ -31,7 +30,7 @@ export default class NoteRepository {
 
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new AppError(
-                    'Erro ao criar observação no banco de dados',
+                    'Error creating note in database',
                     400,
                     ErrorCode.DATABASE_ERROR
                 );
@@ -47,14 +46,13 @@ export default class NoteRepository {
         limit: number = 10,
     ): Promise<{ notes: Note[]; total: number; page: number; pages: number }> {
         try {
-            // Check if task exists
             const task = await prisma.task.findUnique({
                 where: { id: taskId },
             });
 
             if (!task) {
                 throw new AppError(
-                    'Tarefa não encontrada',
+                    'Task not found',
                     404,
                     ErrorCode.TASK_NOT_FOUND
                 );
@@ -88,7 +86,7 @@ export default class NoteRepository {
             }
 
             throw new AppError(
-                'Erro ao buscar observações',
+                'Error fetching notes',
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -102,7 +100,7 @@ export default class NoteRepository {
             });
         } catch (error) {
             throw new AppError(
-                'Erro ao buscar observação',
+                'Error fetching note',
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -119,14 +117,14 @@ export default class NoteRepository {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2025') {
                     throw new AppError(
-                        'Observação não encontrada',
+                        'Note not found',
                         404,
                         ErrorCode.NOTE_NOT_FOUND
                     );
                 }
             }
             throw new AppError(
-                'Erro ao atualizar observação',
+                'Error updating note',
                 500,
                 ErrorCode.DATABASE_ERROR
             );
@@ -142,14 +140,14 @@ export default class NoteRepository {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2025') {
                     throw new AppError(
-                        'Observação não encontrada',
+                        'Note not found',
                         404,
                         ErrorCode.NOTE_NOT_FOUND
                     );
                 }
             }
             throw new AppError(
-                'Erro ao deletar observação',
+                'Error deleting note',
                 500,
                 ErrorCode.DATABASE_ERROR
             );

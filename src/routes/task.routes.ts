@@ -1,22 +1,23 @@
 import { Router } from 'express';
-import TaskController from '../controllers/TaskController';
-import { validate } from '../middlewares/ValidationMiddleware';
+import { container } from 'tsyringe';
+import { TaskController } from '../controllers/TaskController';
+import { validationMiddleware } from '../middlewares/ValidationMiddleware';
 import {
-    TaskCreateSchema,
-    TaskUpdateSchema,
+    TaskCreateDto,
+    TaskUpdateDto,
     TaskParamSchema,
     TaskStatusParamSchema,
     TaskQuerySchema,
 } from '../dtos/TaskDto';
 
-const taskRoutes = Router();
-const taskController = new TaskController();
+const router = Router();
+const taskController = container.resolve(TaskController);
 
-taskRoutes.post('/', validate(TaskCreateSchema), taskController.create.bind(taskController));
-taskRoutes.get('/', validate(TaskQuerySchema), taskController.findAll.bind(taskController));
-taskRoutes.get('/:id', validate(TaskParamSchema), taskController.findById.bind(taskController));
-taskRoutes.get('/status/:status', validate(TaskStatusParamSchema), taskController.findByStatus.bind(taskController));
-taskRoutes.put('/:id', validate(TaskUpdateSchema), taskController.update.bind(taskController));
-taskRoutes.delete('/:id', validate(TaskParamSchema), taskController.delete.bind(taskController));
+router.post('/', validationMiddleware(TaskCreateDto), (req, res) => taskController.create(req, res));
+router.get('/', validationMiddleware(TaskQuerySchema), (req, res) => taskController.findAll(req, res));
+router.get('/:id', validationMiddleware(TaskParamSchema), (req, res) => taskController.findById(req, res));
+router.get('/status/:status', validationMiddleware(TaskStatusParamSchema), (req, res) => taskController.findByStatus(req, res));
+router.put('/:id', validationMiddleware(TaskUpdateDto), (req, res) => taskController.update(req, res));
+router.delete('/:id', validationMiddleware(TaskParamSchema), (req, res) => taskController.delete(req, res));
 
-export default taskRoutes;
+export default router;

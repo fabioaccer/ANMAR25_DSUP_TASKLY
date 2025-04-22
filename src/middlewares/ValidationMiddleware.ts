@@ -1,33 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
-import AppError from '../errors/AppError';
-import { ErrorCode } from '../errors/ErrorCodes';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
-export function validate(schema: AnyZodObject) {
+export const validationMiddleware = (dtoClass: any) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            await schema.parseAsync({
-                body: req.body,
-                query: req.query,
-                params: req.params,
+        const dto = plainToInstance(dtoClass, req.body);
+        const errors = await validate(dto);
+
+        if (errors.length > 0) {
+            const errorMessages = errors.map(error => {
+                return {
+                    field: error.property,
+                    messages: Object.values(error.constraints || {})
+                };
             });
-            return next();
-        } catch (error) {
-            if (error instanceof ZodError) {
-                const formattedErrors = error.errors.map(err => ({
-                    path: err.path.join('.'),
-                    message: err.message
-                }));
-
-                return res.status(400).json({
-                    status: 'error',
-                    message: 'Erro de validação nos dados fornecidos.',
-                    code: ErrorCode.VALIDATION_ERROR,
-                    errors: formattedErrors,
-                });
-            }
-
-            next(error);
+            return res.status(400).json({ errors: errorMessages });
         }
+
+        req.body = dto;
+        return next();
     };
-}
+};
