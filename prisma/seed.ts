@@ -8,15 +8,15 @@ async function main() {
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440000',
-            title: 'Implementar autenticação',
-            description: 'Adicionar autenticação JWT ao sistema',
-            status: 'TODO',
+            title: 'Implement authentication',
+            description: 'Add JWT authentication to the system',
+            status: 'PENDING',
             priority: 5,
-            category: 'BACKEND',
+            category: 'WORK',
             notes: {
                 create: [
                     {
-                        content: 'Utilizar biblioteca jsonwebtoken'
+                        content: 'Use jsonwebtoken library'
                     }
                 ]
             }
@@ -28,15 +28,15 @@ async function main() {
         update: {},
         create: {
             id: '550e8400-e29b-41d4-a716-446655440001',
-            title: 'Desenvolver interface do usuário',
-            description: 'Criar componentes React para dashboard',
+            title: 'Develop user interface',
+            description: 'Create React components for dashboard',
             status: 'IN_PROGRESS',
             priority: 4,
-            category: 'FRONTEND',
+            category: 'WORK',
             notes: {
                 create: [
                     {
-                        content: 'Usar tailwind para estilização'
+                        content: 'Use tailwind for styling'
                     }
                 ]
             }
