@@ -19,6 +19,41 @@ Before you begin, make sure you have the following installed:
 - [Node.js](https://nodejs.org/) (version 14 or higher)
 - [PostgreSQL](https://www.postgresql.org/download/) (version 12 or higher)
 - [Git](https://git-scm.com/downloads)
+- [Docker](https://www.docker.com/) (version 20.10 or higher)
+- [Docker Compose](https://docs.docker.com/compose/) (version 2.0 or higher)
+
+## Running with Docker
+
+The project includes Docker configuration for easy setup and deployment. To run the application using Docker:
+
+1. **Build the Docker images**
+   ```bash
+   docker-compose build
+   ```
+
+2. **Start the containers**
+   ```bash
+   docker-compose up
+   ```
+   Or in detached mode:
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Stop the containers**
+   ```bash
+   docker-compose down
+   ```
+
+The application will be available at:
+```
+http://localhost:3000
+```
+
+The PostgreSQL database will be available at:
+```
+localhost:5432
+```
 
 ## Dependencies
 
