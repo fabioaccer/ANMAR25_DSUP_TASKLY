@@ -20,6 +20,27 @@ Before you begin, make sure you have the following installed:
 - [PostgreSQL](https://www.postgresql.org/download/) (version 12 or higher)
 - [Git](https://git-scm.com/downloads)
 
+## Dependencies
+
+### Main Dependencies
+- @prisma/client: ^4.16.1
+- class-transformer: ^0.5.1
+- class-validator: ^0.14.1
+- cors: ^2.8.5
+- express: ^4.18.2
+- reflect-metadata: ^0.2.2
+- tsyringe: ^4.10.0
+- zod: ^3.21.4
+
+### Development Dependencies
+- @types/cors: ^2.8.13
+- @types/express: ^4.17.17
+- @types/node: ^20.3.1
+- prisma: ^4.16.1
+- ts-node: ^10.9.1
+- ts-node-dev: ^2.0.0
+- typescript: ^5.1.3
+
 ## Installation
 
 1. **Clone the repository**
