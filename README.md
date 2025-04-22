@@ -80,7 +80,7 @@ localhost:5432
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/taskly.git
+   git clone https://github.com/fabioaccer/ANMAR25_DSUP_TASKLY.git
    cd taskly
    ```
 
