@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import taskRoutes from './task.routes';
 import noteRoutes from './note.routes';
+import statusRoutes from './status.routes';
 
-const routes = Router();
+const router = Router();
 
-routes.use(taskRoutes);
-routes.use(noteRoutes);
+router.use('/status', statusRoutes);
+router.use('/tasks', taskRoutes);
+router.use('/notes', noteRoutes);
 
-export default routes;
+export default router;
