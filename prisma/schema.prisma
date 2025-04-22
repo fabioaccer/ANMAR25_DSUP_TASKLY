@@ -11,8 +11,8 @@ model Task {
   id          String   @id @default(uuid())
   title       String   @db.VarChar(100)
   description String   @db.VarChar(500)
-  status      String   @db.VarChar(20) // "TODO", "IN_PROGRESS", "DONE"
-  priority    Int      // 1-5, onde 5 é a mais alta
+  status      String   @db.VarChar(20)
+  priority    Int      
   category    String   @db.VarChar(50)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
