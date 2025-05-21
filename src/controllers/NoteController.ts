@@ -1,9 +1,14 @@
 import { Request, Response } from 'express';
+import { injectable, inject } from 'tsyringe';
 import { NoteService } from '../services/NoteService';
 import { NoteCreateDto, NoteUpdateDto } from '../dtos/NoteDto';
 
+@injectable()
 export class NoteController {
-    constructor(private readonly noteService: NoteService) {}
+    constructor(
+        @inject('NoteService')
+        private readonly noteService: NoteService
+    ) {}
 
     async create(request: Request, response: Response): Promise<Response> {
         const note = await this.noteService.create(request.body as NoteCreateDto);

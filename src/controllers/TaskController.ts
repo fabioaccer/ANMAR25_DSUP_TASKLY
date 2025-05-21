@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
+import { injectable, inject } from 'tsyringe';
 import { TaskService } from '../services/TaskService';
 import { TaskCreateDto, TaskUpdateDto } from '../dtos/TaskDto';
+import { TaskStatus } from '../enums/TaskStatus';
 
+@injectable()
 export class TaskController {
-    constructor(private readonly taskService: TaskService) {}
+    constructor(
+        @inject('TaskService')
+        private readonly taskService: TaskService
+    ) {}
 
     async create(request: Request, response: Response): Promise<Response> {
         const task = await this.taskService.create(request.body as TaskCreateDto);
@@ -31,7 +37,7 @@ export class TaskController {
         const { status } = request.params;
         const { page = 1, limit = 10 } = request.query;
         const result = await this.taskService.findByStatus(
-            status,
+            status as TaskStatus,
             Number(page),
             Number(limit)
         );
